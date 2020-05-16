@@ -7,16 +7,16 @@ entity sync_ram is
 port(
 	clock : in std_logic;
 	we: in std_logic;
-	address : in std_logic_vector (7 downto 0);
-	datain: in std_logic_vector (31 downto 0);
-	dataout: out std_logic_vector (31 downto 0)
+	address : in std_logic_vector (4 downto 0);
+	datain: in std_logic_vector (15 downto 0);
+	dataout: out std_logic_vector (15 downto 0)
 );
-end SyncRAM;
+end sync_ram;
 
 architecture Behavioral of sync_ram is
 
 	-- Define o tamanho da memória
-	type ram_type is array (0 to 2**(address'length)-1) of std_logic_vector(datain'range);
+	type ram_type is array (0 to 31) of std_logic_vector(datain'range);
 	signal ram: ram_type;
 	signal read_address : std_logic_vector(address'range);
 
