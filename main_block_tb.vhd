@@ -11,10 +11,12 @@
 
          component main_block is
 			Port ( reset : in  STD_LOGIC;
+					 start : in STD_LOGIC;
 					 clock : in  STD_LOGIC);
 			end component;
 
          SIGNAL reset :  std_logic;
+			SIGNAL start : std_logic;
          SIGNAL clock :  std_logic;
           
 			constant clock_period : time := 10 ns;
@@ -24,6 +26,7 @@
 		uut : main_block 
 		port map (
 			reset => reset,
+			start => start,
 			clock => clock
 		);
 
@@ -36,5 +39,6 @@
 		end process;
 		
 		reset <= '0';
+		start <= '0', '1' after 100 ns;
 
   END;

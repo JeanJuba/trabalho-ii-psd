@@ -3,6 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity main_block is
     Port ( reset : in  STD_LOGIC;
+			  start : in STD_LOGIC;
            clock : in  STD_LOGIC);
 end main_block;
 
@@ -21,6 +22,7 @@ architecture Behavioral of main_block is
 	Port (
 		clock : in STD_LOGIC;
 		reset : in STD_LOGIC;
+		start : in STD_LOGIC;
 		instruction : in STD_LOGIC_VECTOR(15 downto 0);
 		address : out STD_LOGIC_VECTOR(4 downto 0);
 		store_value : out STD_LOGIC_VECTOR(15 downto 0);
@@ -33,7 +35,7 @@ architecture Behavioral of main_block is
 	
 begin
 	
-	ctrl : control_block port map(clock, reset, sg_instruction, sg_address, sg_store_value, sg_write_value);
+	ctrl : control_block port map(clock, reset, start, sg_instruction, sg_address, sg_store_value, sg_write_value);
 	mem : sync_ram port map(clock, sg_write_value, sg_address, sg_store_value, sg_instruction);
 
 end Behavioral;
