@@ -16,19 +16,20 @@ end control_block;
 
 architecture Behavioral of control_block is
 
-	type state is (START_STATE, CONFIGURATE, STORE, INCREMENT, IDLE, DECODE, LOAD, RESET_STATE);
-	type mem is array(2 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
+	type state is (START_STATE, CONFIGURATE, WRITE_MEM, INCREMENT, IDLE, DECODE, LOAD, LOAD_P1, STORE, STORE_P1, COUNTER_UP, RESET_STATE, HALT);
+	type mem is array(3 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
 	type register_structure is array(3 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
 	
 	signal current_state : state;
 	
 	signal memory_values : mem := ("1111111111111111", --end of program
-											 "0000000000000111", --7
+											 "0001000000000000", --store reg 0 in pos 0
+											 "1010000000000111", --7
 											 "0000000000000001");--load to register 00 value at memopry position 00001
 											 
 	signal registers : register_structure;
 	signal sg_address : STD_LOGIC_VECTOR(4 downto 0) := "00000";
-	signal sg_counter : STD_LOGIC_VECTOR(memory_values'range) := "000";
+	signal sg_counter : STD_LOGIC_VECTOR(memory_values'range) := "0000";
 	signal sg_store_value : STD_LOGIC_VECTOR(15 downto 0);
 	
 	signal ir : STD_LOGIC_VECTOR(15 downto 0);     --instruction register
@@ -55,10 +56,10 @@ begin
 					if sg_store_value = "1111111111111111" then
 						current_state <= IDLE;
 					else
-						current_state <= STORE;
+						current_state <= WRITE_MEM;
 					end if;
 					
-				when STORE =>
+				when WRITE_MEM =>
 					current_state <= INCREMENT;
 				
 				when INCREMENT =>
@@ -78,6 +79,7 @@ begin
 							current_state <= LOAD;
 						
 						when "0001" => --STORE
+							current_state <= STORE;
 						
 						when "0010" => --MOVE
 					
@@ -96,17 +98,33 @@ begin
 						when "1001" => --BNEG
 						
 						when "1010" => --NOP
+							current_state <= COUNTER_UP;
 						
 						when "1011" => --HALT
 						
 						when others => --UNDEFINED
+							current_state <= HALT;
 							
 					end case;
 					
 				when LOAD =>
-					op_code <= instruction(15 downto 12);
+					current_state <= LOAD_P1;
+					
+				when LOAD_P1 =>
+					current_state <= COUNTER_UP;
+					
+				when STORE =>
+					current_state <= STORE_P1;
+				
+				WHEN STORE_P1 =>
+					current_state <= COUNTER_UP;
+				
+				when COUNTER_UP =>
+					current_state <= DECODE;
 				
 				when RESET_STATE =>
+				
+				when HALT =>
 				
 				
 			end case;
@@ -131,7 +149,7 @@ begin
 				store_value <= "0000000000000000";
 				write_value <= '0';
 			
-			when STORE =>
+			when WRITE_MEM =>
 				store_value <= sg_store_value;
 				write_value <= '1';
 			
@@ -151,13 +169,27 @@ begin
 			   ir <= instruction;
 				op_code <= instruction(15 downto 12);	
 				
-				
 			when LOAD =>
+				address <= ir(4 downto 0);
 				
+			when LOAD_P1 =>
+				registers(to_integer(unsigned(ir(11 downto 5)))) <= "0000" & instruction(11 downto 0);
 				
+			when STORE =>
+				address <= ir(10 downto 5);
+				store_value <= "1010" & registers(to_integer(unsigned(ir(4 downto 0))))(11 downto 0);
+				write_value <= '1';
+				
+			when STORE_P1 =>
+				write_value <= '0';
 			
-			
+			when COUNTER_UP =>
+				pc <= std_logic_vector(unsigned(pc) + 1);
+				address <= std_logic_vector(unsigned(pc) + 1);
+				
 			when RESET_STATE =>
+			
+			when HALT =>
 				
 		
 		end case;
