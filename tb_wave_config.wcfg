@@ -7,11 +7,13 @@
          <top_modules>
             <top_module name="numeric_std" />
             <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
+            <top_module name="std_logic_unsigned" />
             <top_module name="testbench" />
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="12" />
+   <WVObjectSize size="14" />
    <wvobject fp_name="/testbench/reset" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">reset</obj_property>
       <obj_property name="ObjectShortName">reset</obj_property>
@@ -27,6 +29,10 @@
    <wvobject fp_name="/testbench/uut/ctrl/current_state" type="other" db_ref_id="1">
       <obj_property name="ElementShortName">current_state</obj_property>
       <obj_property name="ObjectShortName">current_state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/ctrl/sg_counter" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sg_counter[2:0]</obj_property>
+      <obj_property name="ObjectShortName">sg_counter[2:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/ctrl/instruction" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">instruction[15:0]</obj_property>
@@ -51,6 +57,10 @@
    <wvobject fp_name="/testbench/uut/ctrl/write_value" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">write_value</obj_property>
       <obj_property name="ObjectShortName">write_value</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/op/result" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">result[15:0]</obj_property>
+      <obj_property name="ObjectShortName">result[15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/ctrl/registers" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">registers[3:0]</obj_property>
