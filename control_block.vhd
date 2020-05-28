@@ -21,23 +21,27 @@ end control_block;
 architecture Behavioral of control_block is
 
 	type state is (START_STATE, CHECK_COUNTER, CONFIGURATE, WRITE_MEM, INCREMENT,
-						IDLE, DECODE, LOAD, LOAD_P1, STORE, STORE_P1, MOVE, OPERATION, OPERATION_P1, COUNTER_UP, RESET_STATE, HALT);
-	type mem is array(6 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
+						IDLE, DECODE, LOAD, LOAD_P1, STORE, STORE_P1, MOVE, OPERATION, OPERATION_P1,
+						BRANCH, BZERO_CHECK, BNEG_CHECK,
+						COUNTER_UP, RESET_STATE, HALT);
+	type mem is array(8 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
 	type register_structure is array(3 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
 	
 	signal current_state : state;
 	
 	signal memory_values : mem := ("0000000000000111", --7
+											 "0000000000000111",
 											 "1111111111111111", --end of program
-											 "0100001100000001", --sub reg0 and reg3 storing result at reg1
-											 "0011001100000010", --add reg0 and reg3 storing result at reg2
 											 "0010000000000011",
-											 "0001000000000000", --store reg 0 in pos 0
-											 "0000000000000110");--load to register 00 value at memory position 5
+											 "1000000000000110", --branch check
+											 "0100000000010010", --sub reg0 and reg1 storing result at reg2
+											 "0011000000010010", --add reg0 and reg1 storing result at reg2
+											 "0000000001001000", 
+											 "0000000000000111");
 											 
 	signal registers : register_structure;
 	signal sg_address : STD_LOGIC_VECTOR(4 downto 0) := "00000";
-	signal sg_counter : STD_LOGIC_VECTOR(2 downto 0) := "000";
+	signal sg_counter : STD_LOGIC_VECTOR(3 downto 0) := "0000";
 	signal sg_store_value : STD_LOGIC_VECTOR(15 downto 0);
 	
 	signal ir : STD_LOGIC_VECTOR(15 downto 0);     --instruction register
@@ -110,10 +114,13 @@ begin
 							current_state <= OPERATION;
 						
 						when "0111" => --BRANCH
+							current_state <= BRANCH;
 						
 						when "1000" => --BZERO
+							current_state <= BZERO_CHECK;
 						
 						when "1001" => --BNEG
+							current_state <= BNEG_CHECK;
 						
 						when "1010" => --NOP
 							current_state <= COUNTER_UP;
@@ -146,6 +153,23 @@ begin
 				when OPERATION_P1 =>
 					current_state <= COUNTER_UP;
 					
+				when BRANCH =>
+					current_state <= DECODE; --doesn't increment program counter
+				
+				when BZERO_CHECK =>
+					if to_integer(unsigned(registers(3))) = 0 then --tests if result register equals zero
+						current_state <= BRANCH;
+					else
+						current_state <= COUNTER_UP;
+					end if;
+				
+				when BNEG_CHECK =>
+					if to_integer(signed(registers(3))) < 0 then --tests if result register equals zero
+						current_state <= BRANCH;
+					else
+						current_state <= COUNTER_UP;
+					end if;
+				
 				when COUNTER_UP =>
 					current_state <= DECODE;
 				
@@ -199,10 +223,10 @@ begin
 				sg_op_code <= instruction(15 downto 12);	
 				
 			when LOAD =>
-				address <= ir(4 downto 0);
+				address <= ir(4 downto 0); --bit 5 is not used because memory ony has 32 positions so 2^5 is enough
 				
 			when LOAD_P1 =>
-				registers(to_integer(unsigned(ir(11 downto 5)))) <= instruction;
+				registers(to_integer(unsigned(ir(11 downto 6)))) <= instruction;
 				
 			when STORE =>
 				address <= ir(9 downto 5);
@@ -222,16 +246,24 @@ begin
 			
 			when OPERATION_P1 =>
 				registers(to_integer(unsigned(ir(3 downto 0)))) <= result;
+				registers(3) <= result; --stores ALU result at the special register
 			
 			when COUNTER_UP =>
 				pc <= std_logic_vector(unsigned(pc) + 1);
 				address <= std_logic_vector(unsigned(pc) + 1);
 				
+			when BRANCH => --all branch states use this if the check is true because they follow the same pattern
+				pc <= ir(4 downto 0);
+				address <= ir(4 downto 0);
+				
+			when BZERO_CHECK =>
+			
+			when BNEG_CHECK =>
+			
 			when RESET_STATE =>
 			
 			when HALT =>
 				
-		
 		end case;
 		
 	end process;
