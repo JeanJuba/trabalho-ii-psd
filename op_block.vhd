@@ -41,7 +41,7 @@ begin
 				result <= a OR b;
 				
 			when others =>
-				result <= a + b;
+				result <= "0000000000000000";
 			
 		end case;
 		

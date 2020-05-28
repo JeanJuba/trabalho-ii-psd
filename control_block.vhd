@@ -21,7 +21,7 @@ end control_block;
 architecture Behavioral of control_block is
 
 	type state is (START_STATE, CHECK_COUNTER, CONFIGURATE, WRITE_MEM, INCREMENT,
-						IDLE, DECODE, LOAD, LOAD_P1, STORE, STORE_P1, MOVE, OPERATION, OPERATION_P1,
+						IDLE, DECODE, LOAD, LOAD_P1, STORE, STORE_P1, MOVE, ADD, SUB, AND_OP, OR_OP, OPERATION,
 						BRANCH, BZERO_CHECK, BNEG_CHECK,
 						COUNTER_UP, RESET_STATE, HALT);
 	type mem is array(8 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
@@ -29,13 +29,13 @@ architecture Behavioral of control_block is
 	
 	signal current_state : state;
 	
-	signal memory_values : mem := ("0000000000000111", --7
+	signal memory_values : mem := ("0000000000001000", --7
 											 "0000000000000111",
 											 "1111111111111111", --end of program
-											 "0010000000000011",
-											 "1000000000000110", --branch check
+											 "0010000000000001",
+											 "1001000000000110", --branch check
 											 "0100000000010010", --sub reg0 and reg1 storing result at reg2
-											 "0011000000010010", --add reg0 and reg1 storing result at reg2
+											 "0001001000000000", 
 											 "0000000001001000", 
 											 "0000000000000111");
 											 
@@ -102,16 +102,16 @@ begin
 							current_state <= MOVE;
 					
 						when "0011" => --ADD
-							current_state <= OPERATION;
+							current_state <= ADD;
 							
 						when "0100" => --SUB
-							current_state <= OPERATION;
+							current_state <= SUB;
 						
 						when "0101" => --AND
-							current_state <= OPERATION;
+							current_state <= AND_OP;
 						
 						when "0110" => --OR
-							current_state <= OPERATION;
+							current_state <= OR_OP;
 						
 						when "0111" => --BRANCH
 							current_state <= BRANCH;
@@ -126,7 +126,8 @@ begin
 							current_state <= COUNTER_UP;
 						
 						when "1011" => --HALT
-						
+							current_state <= HALT;
+							
 						when others => --UNDEFINED
 							current_state <= HALT;
 							
@@ -147,10 +148,19 @@ begin
 				when MOVE =>
 					current_state <= COUNTER_UP;
 					
-				when OPERATION =>
-					current_state <= OPERATION_P1;
+				when ADD =>
+					current_state <= OPERATION;
 					
-				when OPERATION_P1 =>
+				when SUB =>
+					current_state <= OPERATION;
+					
+				when AND_OP =>
+					current_state <= OPERATION;
+					
+				when OR_OP =>
+					current_state <= OPERATION;
+					
+				when OPERATION =>
 					current_state <= COUNTER_UP;
 					
 				when BRANCH =>
@@ -226,11 +236,11 @@ begin
 				address <= ir(4 downto 0); --bit 5 is not used because memory ony has 32 positions so 2^5 is enough
 				
 			when LOAD_P1 =>
-				registers(to_integer(unsigned(ir(11 downto 6)))) <= instruction;
+				registers(to_integer(unsigned(ir(10 downto 6)))) <= instruction;
 				
 			when STORE =>
-				address <= ir(9 downto 5);
-				store_value <= "1010" & registers(to_integer(unsigned(ir(4 downto 0))))(11 downto 0);
+				address <= ir(10 downto 6);
+				store_value <= registers(to_integer(unsigned(ir(4 downto 0))));
 				write_value <= '1';
 				
 			when STORE_P1 =>
@@ -239,12 +249,27 @@ begin
 			when MOVE =>
 				registers(to_integer(unsigned(ir(4 downto 0)))) <= registers(to_integer(unsigned(ir(11 downto 5))));
 				
-			when OPERATION =>
+			when ADD =>
+				a <= registers(to_integer(unsigned(ir(11 downto 8))));
+				b <= registers(to_integer(unsigned(ir(7 downto 4))));
+				op_code <= sg_op_code;
+				
+			when SUB =>
+				a <= registers(to_integer(unsigned(ir(11 downto 8))));
+				b <= registers(to_integer(unsigned(ir(7 downto 4))));
+				op_code <= sg_op_code;
+				
+			when AND_OP =>
+				a <= registers(to_integer(unsigned(ir(11 downto 8))));
+				b <= registers(to_integer(unsigned(ir(7 downto 4))));
+				op_code <= sg_op_code;
+				
+			when OR_OP =>
 				a <= registers(to_integer(unsigned(ir(11 downto 8))));
 				b <= registers(to_integer(unsigned(ir(7 downto 4))));
 				op_code <= sg_op_code;
 			
-			when OPERATION_P1 =>
+			when OPERATION =>
 				registers(to_integer(unsigned(ir(3 downto 0)))) <= result;
 				registers(3) <= result; --stores ALU result at the special register
 			
