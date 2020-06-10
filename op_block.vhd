@@ -13,13 +13,6 @@ port (
 end op_block;
 
 architecture Behavioral of op_block is
-	
-	component adder is
-    Port ( a : in  STD_LOGIC_VECTOR(7 downto 0);
-           b : in  STD_LOGIC_VECTOR(7 downto 0);
-           s : out  STD_LOGIC_VECTOR(7 downto 0));
-	end component;
-	
 
 begin
 	
