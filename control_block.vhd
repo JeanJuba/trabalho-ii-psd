@@ -24,31 +24,40 @@ architecture Behavioral of control_block is
 						IDLE, DECODE, LOAD, LOAD_P1, STORE, STORE_P1, MOVE, ADD, SUB, AND_OP, OR_OP, OPERATION,
 						BRANCH, BZERO_CHECK, BNEG_CHECK,
 						COUNTER_UP, RESET_STATE, HALT);
-	type mem is array(8 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
-	type register_structure is array(3 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
+	type mem is array(15 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
+	type register_structure is array(6 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
 	
 	signal current_state : state;
 	
-	signal memory_values : mem := ("0000000000001000", --7
-											 "0000000000000111",
-											 "1111111111111111", --end of program
-											 "0010000000000001",
-											 "1001000000000110", --branch check
-											 "0100000000010010", --sub reg0 and reg1 storing result at reg2
-											 "0001001000000000", 
-											 "0000000001001000", 
-											 "0000000000000111");
+	signal memory_values : mem := ("0000000000000010",
+											 "0000000000000001", 
+											 "0000000000000011",
+											 "1111111111111111",
+											 "0011001100100011",  --funcao extra para testar parada
+											 "1000000000001100",  --bzero
+											 "0100000000010000",  --subtrai 1 - 1
+											 "0011001100100011",  --soma 4 + 2
+											 "1000000000001100",  --bzero
+											 "0100000000010000",  --subtrai 2 - 1
+											 "0100000000010000",  --subtrai 3 - 1
+											 "0011001100100011",  --soma 2 + 2
+											 "0000000011001111",  --load 2 novamente
+											 "0000000010001111",  --load 2
+											 "0000000001001110",  --load 1 
+											 "0000000000001101"); --load 3
 											 
 	signal registers : register_structure;
 	signal sg_address : STD_LOGIC_VECTOR(4 downto 0) := "00000";
-	signal sg_counter : STD_LOGIC_VECTOR(3 downto 0) := "0000";
+	signal sg_counter : STD_LOGIC_VECTOR(4 downto 0) := "00000";
 	signal sg_store_value : STD_LOGIC_VECTOR(15 downto 0);
 	
+	signal branch_register : integer := 6; --register used to store results from operations
 	signal ir : STD_LOGIC_VECTOR(15 downto 0);     --instruction register
 	signal pc : STD_LOGIC_VECTOR(4 downto 0) := "00000";     --program counter
 	signal sg_op_code : STD_LOGIC_VECTOR(3 downto 0); --operation code
 	signal first_operand : STD_LOGIC_VECTOR(15 downto 0);
 	signal second_operand : STD_LOGIC_VECTOR(15 downto 0);
+	
 	
 begin
 	process(clock, reset)
@@ -167,14 +176,14 @@ begin
 					current_state <= DECODE; --doesn't increment program counter
 				
 				when BZERO_CHECK =>
-					if to_integer(unsigned(registers(3))) = 0 then --tests if result register equals zero
+					if to_integer(unsigned(registers(branch_register))) = 0 then --tests if result register equals zero
 						current_state <= BRANCH;
 					else
 						current_state <= COUNTER_UP;
 					end if;
 				
 				when BNEG_CHECK =>
-					if to_integer(signed(registers(3))) < 0 then --tests if result register equals zero
+					if to_integer(signed(registers(branch_register))) < 0 then --tests if result register equals zero
 						current_state <= BRANCH;
 					else
 						current_state <= COUNTER_UP;
@@ -271,7 +280,7 @@ begin
 			
 			when OPERATION =>
 				registers(to_integer(unsigned(ir(3 downto 0)))) <= result;
-				registers(3) <= result; --stores ALU result at the special register
+				registers(branch_register) <= result; --stores ALU result at the special register
 			
 			when COUNTER_UP =>
 				pc <= std_logic_vector(unsigned(pc) + 1);

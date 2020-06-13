@@ -31,8 +31,8 @@
       <obj_property name="ObjectShortName">current_state</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/ctrl/sg_counter" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">sg_counter[2:0]</obj_property>
-      <obj_property name="ObjectShortName">sg_counter[2:0]</obj_property>
+      <obj_property name="ElementShortName">sg_counter[4:0]</obj_property>
+      <obj_property name="ObjectShortName">sg_counter[4:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/ctrl/instruction" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">instruction[15:0]</obj_property>
@@ -63,8 +63,42 @@
       <obj_property name="ObjectShortName">result[15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/ctrl/registers" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">registers[3:0]</obj_property>
-      <obj_property name="ObjectShortName">registers[3:0]</obj_property>
+      <obj_property name="ElementShortName">registers[6:0]</obj_property>
+      <obj_property name="ObjectShortName">registers[6:0]</obj_property>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[6]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[6]</obj_property>
+         <obj_property name="ObjectShortName">registers[6]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[5]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[5]</obj_property>
+         <obj_property name="ObjectShortName">registers[5]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[4]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[4]</obj_property>
+         <obj_property name="ObjectShortName">registers[4]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[3]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">registers[3]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[2]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">registers[2]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[1]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">registers[1]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[0]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">registers[0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/testbench/uut/mem/ram" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">ram[0:31]</obj_property>
