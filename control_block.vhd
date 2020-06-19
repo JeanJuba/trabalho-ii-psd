@@ -22,7 +22,7 @@ architecture Behavioral of control_block is
 
 	type state is (START_STATE, CHECK_COUNTER, CONFIGURATE, WRITE_MEM, INCREMENT,
 						IDLE, DECODE, LOAD, LOAD_P1, STORE, STORE_P1, MOVE, ADD, SUB, AND_OP, OR_OP, OPERATION,
-						BRANCH, BZERO_CHECK, BNEG_CHECK,
+						BRANCH, BZERO_CHECK, BNEG_CHECK, LOAD_IMMEDIATE, LOAD_REGISTER, LOAD_REGISTER_P1, ADD_IMMEDIATE, SUB_IMMEDIATE,
 						COUNTER_UP, RESET_STATE, HALT);
 	type mem is array(15 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
 	type register_structure is array(6 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
@@ -40,11 +40,11 @@ architecture Behavioral of control_block is
 											 "1000000000001100",  --bzero
 											 "0100000000010000",  --subtrai 2 - 1
 											 "0100000000010000",  --subtrai 3 - 1
-											 "0011001100100011",  --soma 2 + 2
-											 "0000000011001111",  --load 2 novamente
-											 "0000000010001111",  --load 2
-											 "0000000001001110",  --load 1 
-											 "0000000000001101"); --load 3
+											 "1111111111111111",  --soma 2 + 2
+											 "1110010001001000",  --load 2 novamente
+											 "1101001000000011",  --load 2
+											 "1100000001000000",  --load 1 
+											 "1011000000001101"); --load 3
 											 
 	signal registers : register_structure;
 	signal sg_address : STD_LOGIC_VECTOR(4 downto 0) := "00000";
@@ -134,7 +134,19 @@ begin
 						when "1010" => --NOP
 							current_state <= COUNTER_UP;
 						
-						when "1011" => --HALT
+						when "1011" => --LOAD IMMEDIATE
+							current_state <= LOAD_IMMEDIATE;
+							
+						when "1100" => --LOAD REGISTER
+							current_state <= LOAD_REGISTER;
+						
+						when "1101" => --ADD IMMEDIATE
+							current_state <= ADD_IMMEDIATE;
+						
+						when "1110" => --SUB IMMEDIATE
+							current_state <= SUB_IMMEDIATE;
+						
+						when "1111" => --HALT
 							current_state <= HALT;
 							
 						when others => --UNDEFINED
@@ -188,6 +200,21 @@ begin
 					else
 						current_state <= COUNTER_UP;
 					end if;
+					
+				when LOAD_IMMEDIATE =>
+					current_state <= COUNTER_UP;
+				
+				when LOAD_REGISTER =>
+					current_state <= LOAD_REGISTER_P1;
+					
+				when LOAD_REGISTER_P1 =>
+					current_state <= COUNTER_UP;
+					
+				when ADD_IMMEDIATE =>
+					current_state <= COUNTER_UP;
+				
+				when SUB_IMMEDIATE =>
+					current_state <= COUNTER_UP;
 				
 				when COUNTER_UP =>
 					current_state <= DECODE;
@@ -294,6 +321,21 @@ begin
 			
 			when BNEG_CHECK =>
 			
+			when LOAD_IMMEDIATE =>
+				registers(to_integer(unsigned(ir(11 downto 6)))) <= "0000000000" & ir(5 downto 0);
+				
+			when LOAD_REGISTER =>
+				address <= registers(to_integer(unsigned(ir(3 downto 0))))(4 downto 0);
+				
+			when LOAD_REGISTER_P1 =>
+			  registers(to_integer(unsigned(ir(10 downto 6)))) <= instruction;
+			  
+			when ADD_IMMEDIATE =>
+				registers(to_integer(unsigned(ir(11 downto 9)))) <= std_logic_vector(unsigned(registers(to_integer(unsigned(ir(8 downto 6))))) + unsigned(ir(5 downto 0)));
+				
+			when SUB_IMMEDIATE =>
+				registers(to_integer(unsigned(ir(11 downto 9)))) <= std_logic_vector(unsigned(registers(to_integer(unsigned(ir(8 downto 6))))) - unsigned(ir(5 downto 0)));
+			  
 			when RESET_STATE =>
 			
 			when HALT =>
