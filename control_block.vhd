@@ -23,6 +23,7 @@ architecture Behavioral of control_block is
 	type state is (START_STATE, CHECK_COUNTER, CONFIGURATE, WRITE_MEM, INCREMENT,
 						IDLE, DECODE, LOAD, LOAD_P1, STORE, STORE_P1, MOVE, ADD, SUB, AND_OP, OR_OP, OPERATION,
 						BRANCH, BZERO_CHECK, BNEG_CHECK, LOAD_IMMEDIATE, LOAD_REGISTER, LOAD_REGISTER_P1, ADD_IMMEDIATE, SUB_IMMEDIATE,
+						STORE_REGISTER, STORE_REGISTER_P1,
 						COUNTER_UP, RESET_STATE, HALT);
 	type mem is array(15 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
 	type register_structure is array(6 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
@@ -41,10 +42,10 @@ architecture Behavioral of control_block is
 											 "0100000000010000",  --subtrai 2 - 1
 											 "0100000000010000",  --subtrai 3 - 1
 											 "1111111111111111",  --soma 2 + 2
-											 "1110010001001000",  --load 2 novamente
-											 "1101001000000011",  --load 2
-											 "1100000001000000",  --load 1 
-											 "1011000000001101"); --load 3
+											 "1110010001001000", 
+											 "1010000001000000",  
+											 "1101001000000011",  
+											 "1011000000001101"); 
 											 
 	signal registers : register_structure;
 	signal sg_address : STD_LOGIC_VECTOR(4 downto 0) := "00000";
@@ -131,8 +132,8 @@ begin
 						when "1001" => --BNEG
 							current_state <= BNEG_CHECK;
 						
-						when "1010" => --NOP
-							current_state <= COUNTER_UP;
+						when "1010" => --STORE REGISTER
+							current_state <= STORE_REGISTER;
 						
 						when "1011" => --LOAD IMMEDIATE
 							current_state <= LOAD_IMMEDIATE;
@@ -200,6 +201,12 @@ begin
 					else
 						current_state <= COUNTER_UP;
 					end if;
+					
+				when STORE_REGISTER =>
+					current_state <= STORE_REGISTER_P1;
+					
+				when STORE_REGISTER_P1 =>
+					current_state <= COUNTER_UP;
 					
 				when LOAD_IMMEDIATE =>
 					current_state <= COUNTER_UP;
@@ -320,6 +327,14 @@ begin
 			when BZERO_CHECK =>
 			
 			when BNEG_CHECK =>
+			
+			when STORE_REGISTER =>
+				address <= registers(to_integer(unsigned(ir(4 downto 0))))(4 downto 0);
+				store_value <= registers(to_integer(unsigned(ir(10 downto 6))));
+				write_value <= '1';
+				
+			when STORE_REGISTER_P1 =>
+				write_value <= '0';
 			
 			when LOAD_IMMEDIATE =>
 				registers(to_integer(unsigned(ir(11 downto 6)))) <= "0000000000" & ir(5 downto 0);
