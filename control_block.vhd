@@ -8,6 +8,9 @@ entity control_block is
 		clock : in STD_LOGIC;
 		reset : in STD_LOGIC;
 		start : in STD_LOGIC;
+		file_instruction : in STD_LOGIC_VECTOR(15 downto 0);
+		incoming : in STD_LOGIC;
+		nxtval : out STD_LOGIC;
 		instruction : in STD_LOGIC_VECTOR(15 downto 0);
 		address : out STD_LOGIC_VECTOR(4 downto 0);
 		store_value : out STD_LOGIC_VECTOR(15 downto 0);
@@ -25,31 +28,13 @@ architecture Behavioral of control_block is
 						BRANCH, BZERO_CHECK, BNEG_CHECK, LOAD_IMMEDIATE, LOAD_REGISTER, LOAD_REGISTER_P1, ADD_IMMEDIATE, SUB_IMMEDIATE,
 						STORE_REGISTER, STORE_REGISTER_P1,
 						COUNTER_UP, RESET_STATE, HALT);
-	type mem is array(15 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
+						
 	type register_structure is array(6 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
 	
 	signal current_state : state;
-	
-	signal memory_values : mem := ("0000000000000010",
-											 "0000000000000001", 
-											 "0000000000000011",
-											 "1111111111111111",
-											 "0011001100100011",  --funcao extra para testar parada
-											 "1000000000001100",  --bzero
-											 "0100000000010000",  --subtrai 1 - 1
-											 "0011001100100011",  --soma 4 + 2
-											 "1000000000001100",  --bzero
-											 "0100000000010000",  --subtrai 2 - 1
-											 "0100000000010000",  --subtrai 3 - 1
-											 "1111111111111111",  --soma 2 + 2
-											 "1110010001001000", 
-											 "1010000001000000",  
-											 "1101001000000011",  
-											 "1011000000001101"); 
-											 
+												 
 	signal registers : register_structure;
 	signal sg_address : STD_LOGIC_VECTOR(4 downto 0) := "00000";
-	signal sg_counter : STD_LOGIC_VECTOR(4 downto 0) := "00000";
 	signal sg_store_value : STD_LOGIC_VECTOR(15 downto 0);
 	
 	signal branch_register : integer := 6; --register used to store results from operations
@@ -75,12 +60,10 @@ begin
 					current_state <= CHECK_COUNTER;
 					
 				when CHECK_COUNTER => 
-					if memory_values'length = 0 then
-						current_state <= HALT;
-					elsif to_integer(unsigned(sg_counter)) = (memory_values'length) then
-						current_state <= IDLE;
-					else
+					if incoming = '1' then
 						current_state <= CONFIGURATE;
+					else
+						current_state <= IDLE;
 					end if;
 					
 				when CONFIGURATE =>	
@@ -93,11 +76,11 @@ begin
 					current_state <= CHECK_COUNTER;
 				
 				when IDLE =>
-					if start = '1' then 
+					--if start = '1' then 
 						current_state <= DECODE;
-					else
-						current_state <= IDLE;
-					end if;
+					--else
+						--current_state <= IDLE;
+					--end if;
 					
 				when DECODE =>
 					case instruction(15 downto 12) is
@@ -248,10 +231,11 @@ begin
 				write_value <= '0';
 		
 			when CHECK_COUNTER =>
+				nxtval <= '0';
 		
 			when CONFIGURATE =>
 				address <= sg_address;
-				sg_store_value <= memory_values(to_integer(unsigned(sg_counter)));
+				sg_store_value <= file_instruction;
 				store_value <= "0000000000000000";
 				write_value <= '0';
 			
@@ -260,9 +244,9 @@ begin
 				write_value <= '1';
 			
 			when INCREMENT =>
-				sg_counter <= std_logic_vector(unsigned(sg_counter) + 1);
 				sg_address <= std_logic_vector(unsigned(sg_address) + 1);
 				write_value <= '0';
+				nxtval <= '1';
 			
 			when IDLE =>
 				sg_address <= "00000";

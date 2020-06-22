@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/jeanw/Desktop/VHDL/trabalho-ii-psd/testbench_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="numeric_std" />
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
+            <top_module name="std_logic_textio" />
+            <top_module name="std_logic_unsigned" />
+            <top_module name="testbench" />
+            <top_module name="textio" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="13" />
+   <wvobject fp_name="/testbench/uut/ctrl/current_state" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">current_state</obj_property>
+      <obj_property name="ObjectShortName">current_state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/sg_clock" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sg_clock</obj_property>
+      <obj_property name="ObjectShortName">sg_clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/sg_start" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sg_start</obj_property>
+      <obj_property name="ObjectShortName">sg_start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/sg_inputval" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sg_inputval[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sg_inputval[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/sg_nxtval" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sg_nxtval</obj_property>
+      <obj_property name="ObjectShortName">sg_nxtval</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/sg_incoming" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sg_incoming</obj_property>
+      <obj_property name="ObjectShortName">sg_incoming</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/ctrl/ir" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ir[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ir[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/ctrl/pc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">pc[4:0]</obj_property>
+      <obj_property name="ObjectShortName">pc[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/ctrl/store_value" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">store_value[15:0]</obj_property>
+      <obj_property name="ObjectShortName">store_value[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/ctrl/address" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">address[4:0]</obj_property>
+      <obj_property name="ObjectShortName">address[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/ctrl/write_value" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">write_value</obj_property>
+      <obj_property name="ObjectShortName">write_value</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/ctrl/registers" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">registers[6:0]</obj_property>
+      <obj_property name="ObjectShortName">registers[6:0]</obj_property>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[6]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[6]</obj_property>
+         <obj_property name="ObjectShortName">registers[6]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[5]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[5]</obj_property>
+         <obj_property name="ObjectShortName">registers[5]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[4]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[4]</obj_property>
+         <obj_property name="ObjectShortName">registers[4]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[3]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">registers[3]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[2]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">registers[2]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[1]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">registers[1]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/ctrl/registers[0]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">registers[0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/mem/ram" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ram[0:31]</obj_property>
+      <obj_property name="ObjectShortName">ram[0:31]</obj_property>
+   </wvobject>
+</wave_config>
