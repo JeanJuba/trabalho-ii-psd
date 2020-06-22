@@ -23,7 +23,7 @@ end control_block;
 
 architecture Behavioral of control_block is
 
-	type state is (START_STATE, CHECK_COUNTER, CONFIGURATE, WRITE_MEM, INCREMENT,
+	type state is (START_STATE, CHECK_INPUT, CONFIGURATE, WRITE_MEM, INCREMENT,
 						IDLE, DECODE, LOAD, LOAD_P1, STORE, STORE_P1, MOVE, ADD, SUB, AND_OP, OR_OP, OPERATION,
 						BRANCH, BZERO_CHECK, BNEG_CHECK, LOAD_IMMEDIATE, LOAD_REGISTER, LOAD_REGISTER_P1, ADD_IMMEDIATE, SUB_IMMEDIATE,
 						STORE_REGISTER, STORE_REGISTER_P1,
@@ -57,9 +57,9 @@ begin
 			case(current_state) is
 				
 				when START_STATE =>
-					current_state <= CHECK_COUNTER;
+					current_state <= CHECK_INPUT;
 					
-				when CHECK_COUNTER => 
+				when CHECK_INPUT => 
 					if incoming = '1' then
 						current_state <= CONFIGURATE;
 					else
@@ -73,14 +73,14 @@ begin
 					current_state <= INCREMENT;
 				
 				when INCREMENT =>
-					current_state <= CHECK_COUNTER;
+					current_state <= CHECK_INPUT;
 				
 				when IDLE =>
-					--if start = '1' then 
+					if start = '1' then 
 						current_state <= DECODE;
-					--else
-						--current_state <= IDLE;
-					--end if;
+					else
+						current_state <= IDLE;
+					end if;
 					
 				when DECODE =>
 					case instruction(15 downto 12) is
@@ -212,8 +212,7 @@ begin
 				when RESET_STATE =>
 				
 				when HALT =>
-				
-				
+						
 			end case;
 		
 		end if;
@@ -230,7 +229,7 @@ begin
 				store_value <= "0000000000000000";
 				write_value <= '0';
 		
-			when CHECK_COUNTER =>
+			when CHECK_INPUT =>
 				nxtval <= '0';
 		
 			when CONFIGURATE =>

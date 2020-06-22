@@ -54,6 +54,7 @@
 		variable v_line: line;
 		
 		begin
+			sg_start <= '0';
 			file_open(testcase,".\instructions.txt",read_mode);
 			
 			readline(testcase, v_line);
@@ -67,7 +68,8 @@
 				end loop;
 			sg_incoming <= '0';
 			file_close(testcase);
-			wait for 4*clock_period;
+			wait for 2*clock_period;
+			sg_start <= '1';
 			wait;
 	end process;
 
