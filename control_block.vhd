@@ -330,10 +330,12 @@ begin
 			  
 			when ADD_IMMEDIATE =>
 				registers(to_integer(unsigned(ir(11 downto 9)))) <= std_logic_vector(unsigned(registers(to_integer(unsigned(ir(8 downto 6))))) + unsigned(ir(5 downto 0)));
+				registers(branch_register) <= std_logic_vector(unsigned(registers(to_integer(unsigned(ir(8 downto 6))))) + unsigned(ir(5 downto 0))); --stores ALU result at the special register
 				
 			when SUB_IMMEDIATE =>
 				registers(to_integer(unsigned(ir(11 downto 9)))) <= std_logic_vector(unsigned(registers(to_integer(unsigned(ir(8 downto 6))))) - unsigned(ir(5 downto 0)));
-			  
+				registers(branch_register) <= std_logic_vector(unsigned(registers(to_integer(unsigned(ir(8 downto 6))))) - unsigned(ir(5 downto 0)));
+				
 			when RESET_STATE =>
 			
 			when HALT =>
